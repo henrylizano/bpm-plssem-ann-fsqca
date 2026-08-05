@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+title: "BPM Tri-metodológico: PLS-SEM + ANN + fsQCA"
+message: "If you use this software or dataset, please cite it as below."
+type: software
+authors:
+  - family-names: "Lizano-Mora"
+    given-names: "Henry"
+    affiliation: "Instituto Tecnológico de Costa Rica / Universidad de Sevilla"
+abstract: >-
+  Fully open-source reproduction package for a tri-methodological study of a
+  hierarchical Business Process Management model, integrating partial least
+  squares structural equation modeling (PLS-SEM), artificial neural networks
+  (ANN) and fuzzy-set qualitative comparative analysis (fsQCA). Independent
+  implementations in Python and R reproduce every numerical result and figure
+  of the associated article.
+keywords:
+  - business process management
+  - PLS-SEM
+  - artificial neural networks
+  - fsQCA
+  - reproducible research
+  - process governance
+license: MIT
+repository-code: "https://github.com/henrylizano/bpm-plssem-ann-fsqca"
+version: "1.0.0"
+date-released: "2026-08-04"

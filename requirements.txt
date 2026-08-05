@@ -1,0 +1,39 @@
+# ==============================================================================
+# Requirements — Tri-methodological BPM Article (PLS-SEM + ANN + fsQCA)
+# Scripts: reproducir_articulo.py  /  reproduce_article.py
+#
+# Python >= 3.9
+#
+# Install:
+#   python3 -m venv .venv
+#   source .venv/bin/activate        # macOS / Linux
+#   .venv\Scripts\activate           # Windows
+#   pip install -r requirements.txt
+# ==============================================================================
+
+# Core scientific stack
+numpy==2.0.2
+pandas==2.3.3
+scipy==1.13.1
+scikit-learn==1.6.1
+
+# Visualization
+matplotlib==3.9.4
+seaborn==0.13.2
+
+# --- transitive dependencies (pinned for full reproducibility) ---
+contourpy==1.3.0
+cycler==0.12.1
+fonttools==4.60.2
+importlib_resources==6.5.2
+joblib==1.5.3
+kiwisolver==1.4.7
+packaging==26.2
+pillow==11.3.0
+pyparsing==3.3.2
+python-dateutil==2.9.0.post0
+pytz==2026.2
+six==1.17.0
+threadpoolctl==3.6.0
+tzdata==2026.2
+zipp==3.23.1
