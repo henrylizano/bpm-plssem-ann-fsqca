@@ -22,6 +22,7 @@ networks (**ANN**) and fuzzy-set qualitative comparative analysis (**fsQCA**).
 | `reproduce_article_en.R` | R ≥ 4.0 | English | Translation of the above. Figures in `figs_en/`. |
 | `requirements.txt` | — | — | Python dependencies with pinned versions, transitive ones included, for bit-for-bit reproducibility. |
 | `final_dataset_plssem.csv` | — | — | Analytical dataset: **n = 56** valid observations, 20 Likert-scale indicators. No personal identifiers. |
+| `references/` | — | — | The article's bibliography (63 entries) in three formats: **BibTeX**, **BibLaTeX** and **Zotero RDF**. See [`references/README.md`](references/README.md). |
 | `LICENSE` | — | — | MIT License (see §7). |
 | `CITATION.cff` | — | — | Machine-readable citation metadata (GitHub, Zenodo, reference managers). |
 

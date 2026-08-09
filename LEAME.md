@@ -23,6 +23,7 @@ difuso (**fsQCA**).
 | `reproduce_article_en.R` | R ≥ 4.0 | Inglés | Traducción del anterior. Figuras en `figs_en/`. |
 | `requirements.txt` | — | — | Dependencias de Python con versiones fijadas (*pinned*), incluidas las transitivas, para reproducibilidad bit a bit. |
 | `final_dataset_plssem.csv` | — | — | Conjunto de datos analítico: **n = 56** observaciones válidas, 20 indicadores en escala Likert. Sin identificadores personales. |
+| `references/` | — | — | Bibliografía del artículo (63 entradas) en tres formatos: **BibTeX**, **BibLaTeX** y **Zotero RDF**. Véase [`references/README.md`](references/README.md). |
 | `LICENSE` | — | — | Licencia MIT (véase §7). |
 | `CITATION.cff` | — | — | Metadatos de citación legibles por máquina (GitHub, Zenodo, gestores bibliográficos). |
 
