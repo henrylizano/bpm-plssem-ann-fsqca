@@ -21,8 +21,8 @@ difuso (**fsQCA**).
 
 | Archivo | Lenguaje | Idioma | Descripción |
 |---|---|---|---|
-| `reproducir_articulo.py` | Python ≥ 3.9 | Español | Script maestro de reproducción. Implementa PLS-SEM, ANN y fsQCA **desde cero** (sin dependencias PLS/QCA especializadas), en 7 módulos. Genera figuras en `figs/`. |
-| `reproduce_article.py` | Python ≥ 3.9 | Inglés | Traducción literal del anterior. Misma lógica numérica y mismas semillas. Genera figuras en `figs_en/`. |
+| `reproduce_article.py` | Python ≥ 3.9 | Inglés | **Implementación de referencia.** Programa PLS-SEM, ANN y fsQCA **desde cero** (sin dependencias PLS/QCA especializadas), en 7 módulos, replicando las configuraciones canónicas de R. Genera figuras en `figs_en/`. |
+| `reproducir_articulo.py` | Python ≥ 3.9 | Español | Versión en español de la misma arquitectura de 7 módulos. Genera figuras en `figs/`. Los módulos 3 y 5 conservan las variantes simplificadas previas (Q² por *blindfolding* y calibración lineal por tramos); véase la nota al final de esta sección. |
 | `reproducir_articulo.R` | R ≥ 4.0 | Español | Réplica independiente usando los paquetes canónicos del campo (`seminr`, `QCA`, `nnet`). Sirve de **validación cruzada** de la implementación en Python. Figuras en `figs/`. |
 | `reproduce_article_en.R` | R ≥ 4.0 | Inglés | Traducción del anterior. Figuras en `figs_en/`. |
 | `requirements.txt` | — | — | Dependencias de Python con versiones fijadas (*pinned*), incluidas las transitivas, para reproducibilidad bit a bit. |
@@ -35,6 +35,14 @@ programa los algoritmos explícitamente, mientras que la de R delega en paquetes
 consolidados. La convergencia sustantiva de ambas es, en sí misma, evidencia de
 robustez de los hallazgos; pueden aparecer diferencias marginales en la tercera
 cifra decimal por diferencias de semillas y generadores pseudoaleatorios.
+
+> **Nota sobre `reproducir_articulo.py`.** `reproduce_article.py` incorpora tres
+> mejoras metodológicas que la versión en español todavía no recoge:
+> PLSpredict completo con contraste frente a un modelo lineal (módulo 3),
+> optimizador L-BFGS con activación logística en las ANN (módulo 4) y
+> calibración logística de Ragin con solución conservadora y análisis de
+> sensibilidad (módulo 5). Para reproducir los resultados publicados, usa la
+> versión en inglés.
 
 ---
 
@@ -60,9 +68,9 @@ install.packages(c("seminr", "QCA", "nnet", "NeuralNetTools",
 source("reproducir_articulo.R")    # o: source("reproduce_article_en.R")
 ```
 
-Tiempo de ejecución aproximado en un portátil actual: **1–3 minutos** en Python
-(dominado por el *bootstrap* de 3 000 remuestreos y las 330 redes neuronales) y
-algo más en R.
+Tiempo de ejecución aproximado en un portátil actual: **2–5 minutos** en Python
+(dominado por el *bootstrap* de 3 000 remuestreos, las 100 particiones de
+PLSpredict y las 130 redes neuronales) y algo más en R.
 
 ---
 
@@ -94,9 +102,9 @@ correspondencia Python ↔ R es línea a línea.
 MÓDULO 0  Carga de datos y construcción de scores (Etapa 1)
 MÓDULO 1  Modelo de medida: fiabilidad, AVE, HTMT
 MÓDULO 2  PLS-SEM Etapa 2: modelo formativo + estructural + bootstrap
-MÓDULO 3  Evaluación predictiva (Q² / PLSpredict)
+MÓDULO 3  Evaluación predictiva (PLSpredict: PLS frente a benchmark lineal)
 MÓDULO 4  Redes neuronales artificiales (diagnóstico + robusto)
-MÓDULO 5  fsQCA: calibración + necesidad + suficiencia con PRI
+MÓDULO 5  fsQCA: calibración logística + necesidad/RoN + solución conservadora
 MÓDULO 6  Generación de figuras
 ```
 
@@ -152,15 +160,28 @@ entre `X` e `Y`), **R²** = β² y **R² ajustado**. Adicionalmente se reportan:
   De la distribución bootstrap se derivan errores estándar, estadísticos *t*,
   valores *p* e intervalos de confianza percentil al 95 %.
 
-**Evaluación predictiva (Módulo 3).** El Python implementa **Q² de
-Stone-Geisser** mediante *blindfolding* con distancia de omisión 7: se elimina
-sistemáticamente cada séptima observación, se predice el indicador omitido a
-partir del *score* del constructo y se acumula `Q² = 1 − SSE/SSO`; Q² > 0 indica
-relevancia predictiva. El R usa `seminr::predict_pls` (**PLSpredict**, 10
-particiones × 10 repeticiones), es decir, validación cruzada fuera de muestra
-propiamente dicha. Es una diferencia deliberada entre implementaciones: la
-versión R es el estándar metodológico, la versión Python es una aproximación
-autocontenida sin dependencias externas.
+**Evaluación predictiva (Módulo 3).** El módulo implementa **PLSpredict**
+(Shmueli *et al.*, 2016, 2019) tal como se define metodológicamente: validación
+cruzada de **10 particiones × 10 repeticiones** fuera de muestra. Dentro de cada
+partición:
+
+1. Se estandarizan los datos **con los estadísticos del subconjunto de
+   entrenamiento** (nunca con los del conjunto completo), para evitar
+   *data leakage*.
+2. Se estima el modelo PLS solo con el entrenamiento, corrigiendo la
+   indeterminación de signo, y se proyecta el *score* latente de las
+   observaciones retenidas.
+3. Se predicen los indicadores endógenos como `β · score · carga` y se acumulan
+   los errores de predicción.
+4. En paralelo se ajusta el **benchmark lineal (LM)**: una regresión OLS de cada
+   indicador endógeno sobre los tres indicadores exógenos.
+
+Se reportan **RMSE** y **MAE** de ambos modelos por indicador, más el
+**Q²predict** (que usa la media de entrenamiento como referencia ingenua). El
+criterio de Shmueli *et al.* (2019) clasifica la capacidad predictiva según en
+cuántos indicadores el modelo PLS bate al LM: 3/3 alta, 2/3 media, ≤ 1/3 baja.
+El script imprime ese veredicto automáticamente en lugar de asumirlo. La
+implementación en R usa `seminr::predict_pls` con los mismos parámetros.
 
 ### 4.2 Redes neuronales artificiales (Módulo 4)
 
@@ -187,17 +208,23 @@ la dominancia cambia con la semilla: **la ejecución única no es fiable, es un
 artefacto de inicialización**. La figura 4 documenta esta inestabilidad.
 
 **(b) Protocolo robusto.** Se entrenan **10 redes × validación cruzada de 10
-particiones = 100 modelos**, con dos cambios clave respecto al diagnóstico:
-capa oculta reducida a **3 neuronas** y **regularización L2** (`alpha = 0.1` en
-scikit-learn, `decay = 0.1` en `nnet`). Las importancias se promedian dentro de
-cada red y luego entre redes, reportando media y desviación típica. Se controla
-el sobreajuste comparando **RMSE de entrenamiento frente a RMSE de prueba**: la
-diferencia resulta prácticamente nula (≈ −0,006 en la ejecución de referencia),
-lo que descarta el sobreajuste. Frente al diagnóstico de ejecución única, el
-promediado sobre 100 modelos regularizados produce un **ordenamiento estable** de
-las importancias, que es la magnitud que el artículo interpreta; la desviación
-típica residual entre redes se reporta explícitamente junto a cada media y se
-visualiza como barra de error en la figura 5.
+particiones = 100 modelos**, con tres cambios clave respecto al diagnóstico:
+
+- Arquitectura parsimoniosa: capa oculta reducida a **3 neuronas**.
+- **Regularización L2**: `alpha = 0.1` en scikit-learn, `decay = 0.1` en `nnet`.
+- **Réplica exacta de la configuración de R**: optimizador **L-BFGS** y
+  activación **logística** (sigmoide), que es lo que usa `nnet` internamente
+  (BFGS + sigmoide), en lugar del `adam` + `tanh` del módulo diagnóstico. Esto
+  garantiza la equivalencia numérica del hallazgo entre plataformas.
+
+Las importancias se promedian dentro de cada red y luego entre redes,
+reportando media y desviación típica. Se controla el sobreajuste comparando
+**RMSE de entrenamiento frente a RMSE de prueba**: la diferencia resulta
+prácticamente nula (+0,004 en la ejecución de referencia). Con esta
+configuración la desviación típica entre redes cae a **≤ 0,2 puntos
+porcentuales**, frente a los rangos de decenas de puntos del diagnóstico: las
+importancias pasan a ser **estables y reportables**, y se visualizan con barras
+de error en la figura 5.
 
 ### 4.3 fsQCA (Módulo 5)
 
@@ -207,22 +234,27 @@ admite equifinalidad (varios caminos al mismo resultado) y causalidad asimétric
 (las causas del desempeño alto no son la imagen especular de las del bajo).
 
 **Calibración.** Los *scores* continuos se transforman en pertenencias difusas
-`[0, 1]` mediante calibración directa por **percentiles**: umbral de pertenencia
-plena `P95`, punto de cruce `P50` y umbral de exclusión plena `P05`. La función
-`calibrate()` de Python aplica una interpolación lineal por tramos entre esos
-tres anclajes, recortada a `[0.05, 0.95]` para evitar los valores extremos 0 y 1;
-la versión R delega en `QCA::calibrate(type = "fuzzy")`, que usa la
-transformación logística estándar. Ambas producen el mismo ordenamiento; la
-versión Python es una aproximación lineal más simple.
+`[0, 1]` mediante la **calibración directa logística de Ragin**, con anclajes por
+percentiles: pertenencia plena `P95`, punto de cruce `P50` y exclusión plena
+`P05`. La función `calibrate()` calcula los *log-odds* escalados de forma que en
+los umbrales extremos valgan `±log(0,95/0,05)` y aplica la sigmoide
+`1/(1+e^−logodds)`. Es **numéricamente equivalente** a
+`QCA::calibrate(type = "fuzzy", logistic = TRUE)` de R, de modo que ambas
+implementaciones producen las mismas pertenencias.
 
 **Análisis de necesidad.** Para cada condición se calcula
 
-- **Consistencia** `= Σ min(condición, resultado) / Σ resultado`
-- **Cobertura** `= Σ min(condición, resultado) / Σ condición`
+- **Consistencia (inclN)** `= Σ min(condición, resultado) / Σ resultado`
+- **Cobertura (covN)** `= Σ min(condición, resultado) / Σ condición`
+- **RoN** (*Relevance of Necessity*, Schneider & Wagemann, 2012)
+  `= Σ(1 − condición) / Σ(1 − min(condición, resultado))`
 
-Una condición se considera necesaria si su consistencia ≥ **0,90**. El análisis
-se ejecuta **dos veces**: para el desempeño alto (BPO) y para su negación
-(~BPO = 1 − BPO), precisamente para poner a prueba la asimetría causal.
+El RoN es esencial: una condición puede alcanzar una consistencia alta
+simplemente por ser **trivialmente omnipresente** (casi todos los casos
+pertenecen a ella), y el RoN detecta ese caso reportando un valor bajo. Sin él,
+una condición irrelevante puede parecer necesaria. El análisis se ejecuta **dos
+veces**, para el desempeño alto (BPO) y para su negación (~BPO = 1 − BPO), a fin
+de poner a prueba la asimetría causal.
 
 **Análisis de suficiencia.** Se construye la **tabla de verdad** completa
 recorriendo los 2³ = 8 rincones del espacio de propiedades. La pertenencia de
@@ -234,14 +266,28 @@ negadas mediante `1 − x` donde corresponda. Para cada configuración se calcul
   configuraciones simultáneamente consistentes con el resultado y su negación:
   `PRI = [Σ min(m,Y) − Σ min(min(m,Y), min(m,~Y))] / [Σ m − Σ min(min(m,Y), min(m,~Y))]`,
   umbral ≥ **0,70**. Es el filtro que descarta las soluciones espurias.
-- **Cobertura bruta** de cada configuración retenida.
+- **Número de casos** con pertenencia > 0,5. Las filas con `n = 0` se marcan
+  explícitamente como **restos lógicos** (`OUT = ?`): configuraciones sin
+  evidencia empírica.
 
-Las configuraciones que superan ambos umbrales se combinan con el operador OR
-difuso (máximo) para obtener la **consistencia y cobertura de la solución
-global**. El script informa además en cuántas de las configuraciones suficientes
-aparece GOVMEAS, criterio con el que se identifica como **condición central**.
-La versión R obtiene la solución mediante `QCA::truthTable` + `QCA::minimize`,
-que aplica el algoritmo de minimización booleana de Quine-McCluskey.
+**Minimización conservadora.** La función `minimize_conservative()` aplica el
+algoritmo de **Quine-McCluskey** únicamente sobre las filas **observadas** con
+`OUT = 1`, combinando iterativamente términos que difieren en una sola condición
+y sustituyendo esa condición por un *don't care*; después selecciona los
+implicantes primos esenciales y completa la cobertura de forma voraz. Los restos
+lógicos **no** se incorporan como supuestos simplificadores, lo que produce la
+**solución conservadora (compleja)** — la más exigente de las tres soluciones de
+fsQCA, porque no asume nada sobre configuraciones que no se observaron. Para
+cada término se reportan consistencia, PRI, **cobertura bruta** y **cobertura
+única** (la porción del resultado explicada solo por ese término); para la
+solución global, consistencia, PRI y cobertura. En R el equivalente es
+`QCA::truthTable` + `QCA::minimize`.
+
+**Análisis de sensibilidad.** El módulo repite el procedimiento completo con
+anclajes alternativos **90/50/10** en lugar de 95/50/5, y contrasta ambas
+soluciones. Que la estructura de la solución y la centralidad de GOVMEAS se
+mantengan bajo los dos esquemas es la evidencia de que el resultado no es un
+artefacto de las decisiones de calibración.
 
 ### 4.4 Síntesis tri-metodológica (Módulo 6)
 
@@ -250,6 +296,13 @@ formativos de PLS-SEM, importancia de Garson de las ANN y consistencia de
 necesidad de fsQCA—, cada serie normalizada por su propio máximo para hacerlos
 comparables en forma, no en escala. La convergencia de los tres métodos sobre la
 misma dimensión es el argumento central del artículo.
+
+Al terminar, el script imprime un bloque de resumen con los indicadores clave de
+los tres métodos: β, R² y t de PLS-SEM; el recuento PLS-frente-a-LM de
+PLSpredict; la importancia media y la desviación típica máxima entre redes de la
+ANN; y la expresión de la solución conservadora de fsQCA con su consistencia,
+PRI y cobertura. Todos los valores se interpolan de la ejecución en curso, no
+están fijados en el código.
 
 ---
 
@@ -331,9 +384,15 @@ repository* a partir de él.
   modeling. *Journal of the Academy of Marketing Science*, 43(1), 115–135.
 - Ragin, C. C. (2008). *Redesigning Social Inquiry: Fuzzy Sets and Beyond*.
   University of Chicago Press.
+- Schneider, C. Q., & Wagemann, C. (2012). *Set-Theoretic Methods for the Social
+  Sciences: A Guide to Qualitative Comparative Analysis*. Cambridge University
+  Press.
 - Sarstedt, M., Hair, J. F., Cheah, J.-H., Becker, J.-M., & Ringle, C. M. (2019).
   How to specify, estimate, and validate higher-order constructs in PLS-SEM.
   *Australasian Marketing Journal*, 27(3), 197–211.
 - Shmueli, G., Ray, S., Velasquez Estrada, J. M., & Chatla, S. B. (2016).
   The elephant in the room: Predictive performance of PLS models.
   *Journal of Business Research*, 69(10), 4552–4564.
+- Shmueli, G., Sarstedt, M., Hair, J. F., Cheah, J.-H., Ting, H., Vaithilingam, S.,
+  & Ringle, C. M. (2019). Predictive model assessment in PLS-SEM: Guidelines for
+  using PLSpredict. *European Journal of Marketing*, 53(11), 2322–2347.
