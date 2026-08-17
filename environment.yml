@@ -1,0 +1,31 @@
+# ==============================================================================
+# Conda environment — Tri-methodological BPM article (PLS-SEM + ANN + fsQCA)
+# Scripts: reproduce_article.py / reproducir_articulo.py
+#
+# Create and activate:
+#   conda env create -f environment.yml
+#   conda activate bpm-plssem-ann-fsqca
+#
+# Equivalent pip route (bit-exact, transitive versions pinned):
+#   pip install -r requirements.txt
+#
+# The R dependencies are locked separately in renv.lock:
+#   renv::restore()
+# ==============================================================================
+name: bpm-plssem-ann-fsqca
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.9.6
+
+  # Core scientific stack
+  - numpy=2.0.2
+  - pandas=2.3.3
+  - scipy=1.13.1
+  - scikit-learn=1.6.1
+
+  # Visualization
+  - matplotlib=3.9.4
+  - seaborn=0.13.2

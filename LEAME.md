@@ -21,7 +21,9 @@ difuso (**fsQCA**).
 | `reproducir_articulo.py` | Python ≥ 3.9 | Español | Versión en español de la misma arquitectura de 7 módulos. Genera figuras en `figs/`. Los módulos 3 y 5 conservan las variantes simplificadas previas (Q² por *blindfolding* y calibración lineal por tramos); véase la nota al final de esta sección. |
 | `reproducir_articulo.R` | R ≥ 4.0 | Español | Réplica independiente usando los paquetes canónicos del campo (`seminr`, `QCA`, `nnet`). Sirve de **validación cruzada** de la implementación en Python. Figuras en `figs/`. |
 | `reproduce_article_en.R` | R ≥ 4.0 | Inglés | Traducción del anterior. Figuras en `figs_en/`. |
-| `requirements.txt` | — | — | Dependencias de Python con versiones fijadas (*pinned*), incluidas las transitivas, para reproducibilidad bit a bit. |
+| `requirements.txt` | — | — | Dependencias de Python con versiones fijadas (*pinned*), incluidas las transitivas, para reproducibilidad bit a bit (vía pip). |
+| `environment.yml` | — | — | Entorno conda equivalente: Python 3.9.6 y los seis paquetes científicos fijados, desde `conda-forge`. |
+| `renv.lock` | — | — | Lockfile de R generado con `renv::snapshot()`: R 4.6.1 y **120 paquetes** (las 7 dependencias directas más todas las recursivas) fijados a versiones exactas. |
 | `final_dataset_plssem.csv` | — | — | Conjunto de datos analítico: **n = 56** observaciones válidas, 20 indicadores en escala Likert. Sin identificadores personales. |
 | `references/` | — | — | Bibliografía del artículo (63 entradas) en tres formatos: **BibTeX**, **BibLaTeX** y **Zotero RDF**. Véase [`references/README.md`](references/README.md). |
 | `LICENSE` | — | — | Licencia MIT (véase §7). |
@@ -48,7 +50,7 @@ cifra decimal por diferencias de semillas y generadores pseudoaleatorios.
 Todos los scripts esperan `final_dataset_plssem.csv` **en el mismo directorio**;
 ejecútalos desde la raíz del repositorio.
 
-### Python
+### Python — pip (bit a bit)
 
 ```bash
 python3 -m venv .venv
@@ -57,12 +59,28 @@ pip install -r requirements.txt
 python reproducir_articulo.py      # o: python reproduce_article.py
 ```
 
-### R
+### Python — conda
+
+```bash
+conda env create -f environment.yml
+conda activate bpm-plssem-ann-fsqca
+python reproducir_articulo.py
+```
+
+### R — renv (recomendado, versiones exactas)
+
+```r
+install.packages("renv")
+renv::restore()                    # instala los 120 paquetes de renv.lock
+source("reproducir_articulo.R")    # o: source("reproduce_article_en.R")
+```
+
+### R — instalación manual
 
 ```r
 install.packages(c("seminr", "QCA", "nnet", "NeuralNetTools",
                    "caret", "ggplot2", "reshape2"))
-source("reproducir_articulo.R")    # o: source("reproduce_article_en.R")
+source("reproducir_articulo.R")
 ```
 
 Tiempo de ejecución aproximado en un portátil actual: **2–5 minutos** en Python
@@ -326,8 +344,10 @@ versiones):
 - Semillas deterministas por red: `0…29` en el diagnóstico y `100+net` en el
   protocolo robusto.
 - Bootstrap con semilla fija (`seed = 42` en `seminr::bootstrap_model`).
-- Dependencias de Python fijadas por versión exacta en `requirements.txt`,
-  incluidas las transitivas.
+- Dependencias de Python fijadas por versión exacta en `requirements.txt` (pip)
+  y `environment.yml` (conda); las transitivas van incluidas en la vía pip.
+- Dependencias de R fijadas en `renv.lock` (R 4.6.1, 120 paquetes incluidas
+  todas las recursivas), restaurables con `renv::restore()`.
 
 Con ello, cada ejecución devuelve los mismos números. Las diferencias entre la
 implementación en Python y la de R se limitan a la tercera cifra decimal y se
