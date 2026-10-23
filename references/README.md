@@ -1,11 +1,13 @@
 # References / Referencias
 
 The bibliography cited in the article, exported in three interchangeable
-formats. All three contain the **same 63 entries** and are kept in sync.
+formats. All three contain the **same 66 entries** and are kept in sync (63 of version 1.0.0 plus the three added in version 1.1.0 for the robustness analysis: Oana & Schneider, 2024; Paxton et al., 2001; Decruyenaere et al., 2024).
 
 La bibliografía citada en el artículo, exportada en tres formatos
-intercambiables. Los tres contienen las **mismas 63 entradas** y se mantienen
-sincronizados.
+intercambiables. Los tres contienen las **mismas 66 entradas** y se mantienen
+sincronizados (las 63 de la versión 1.0.0 más las tres añadidas en la versión
+1.1.0 para el análisis de robustez: Oana & Schneider, 2024; Paxton et al., 2001;
+Decruyenaere et al., 2024).
 
 | File | Format | Use with |
 |---|---|---|
@@ -32,7 +34,7 @@ sincronizados.
 ```
 
 **Zotero:** *File → Import…* → select `bpm_references_zotero.rdf`. The importer
-creates a new collection with the 63 items.
+creates a new collection with the 66 items.
 
 ## Coverage / Cobertura
 
@@ -40,7 +42,10 @@ The bibliography spans the three strands the article integrates: BPM theory and
 capabilities (Hammer, Dumas, vom Brocke, Rosemann, van der Aalst, Trkman,
 Škrinjar), PLS-SEM methodology (Hair, Henseler, Sarstedt, Shmueli, Becker,
 Kock), the SEM–ANN hybrid tradition (Leong, Sharma, Luyao, Le) and set-theoretic
-methods (Ragin, Fiss, Schneider & Wagemann, Pappas & Woodside, Dul).
+methods (Ragin, Fiss, Schneider & Wagemann, Pappas & Woodside, Dul), plus the
+robustness-analysis sources added in v1.1.0 (Oana & Schneider's QCA robustness
+protocol, Paxton et al.'s Monte Carlo design guidelines, and Decruyenaere et
+al.'s analysis of the inferential utility of synthetic data).
 
 La bibliografía cubre las tres líneas que el artículo integra: teoría y
 capacidades de BPM, metodología PLS-SEM, la tradición híbrida SEM–ANN y los

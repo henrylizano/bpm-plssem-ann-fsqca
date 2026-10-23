@@ -2772,4 +2772,184 @@
         <dc:description>LCCN: 75022267</dc:description>
         <dc:identifier>ISBN 978-0-226-31652-9</dc:identifier>
     </bib:Book>
+    <bib:Article rdf:about="https://doi.org/10.1177/00491241211036158">
+        <z:itemType>journalArticle</z:itemType>
+        <dcterms:isPartOf>
+            <bib:Journal>
+                <dc:identifier>DOI 10.1177/00491241211036158</dc:identifier>
+                <prism:volume>53</prism:volume>
+                <dc:title>Sociological Methods &amp; Research</dc:title>
+                <prism:number>1</prism:number>
+            </bib:Journal>
+        </dcterms:isPartOf>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Oana</foaf:surname>
+                        <foaf:givenName>Ioana-Elena</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Schneider</foaf:surname>
+                        <foaf:givenName>Carsten Q.</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <dc:title>A robustness test protocol for applied QCA: Theory and R software application</dc:title>
+        <dc:date>2024</dc:date>
+        <z:citationKey>Oana2024RobustnessProtocolQCA</z:citationKey>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>https://doi.org/10.1177/00491241211036158</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <bib:pages>57–88</bib:pages>
+    </bib:Article>
+    <bib:Article rdf:about="https://doi.org/10.1207/S15328007SEM0802_7">
+        <z:itemType>journalArticle</z:itemType>
+        <dcterms:isPartOf>
+            <bib:Journal>
+                <dc:identifier>DOI 10.1207/S15328007SEM0802_7</dc:identifier>
+                <prism:volume>8</prism:volume>
+                <dc:title>Structural Equation Modeling: A Multidisciplinary Journal</dc:title>
+                <prism:number>2</prism:number>
+            </bib:Journal>
+        </dcterms:isPartOf>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Paxton</foaf:surname>
+                        <foaf:givenName>Pamela</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Curran</foaf:surname>
+                        <foaf:givenName>Patrick J.</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Bollen</foaf:surname>
+                        <foaf:givenName>Kenneth A.</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Kirby</foaf:surname>
+                        <foaf:givenName>Jim</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Chen</foaf:surname>
+                        <foaf:givenName>Feinian</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <dc:title>Monte Carlo experiments: Design and implementation</dc:title>
+        <dc:date>2001</dc:date>
+        <z:citationKey>Paxton2001MonteCarloExperiments</z:citationKey>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>https://doi.org/10.1207/S15328007SEM0802_7</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <bib:pages>287–312</bib:pages>
+    </bib:Article>
+    <rdf:Description rdf:about="https://proceedings.mlr.press/v244/decruyenaere24a.html">
+        <z:itemType>conferencePaper</z:itemType>
+        <dcterms:isPartOf>
+            <bib:Journal>
+                <dcterms:isPartOf>
+                    <bib:Series>
+                        <dc:title>Proceedings of Machine Learning Research</dc:title>
+                    </bib:Series>
+                </dcterms:isPartOf>
+                <prism:volume>244</prism:volume>
+                <dc:title>Proceedings of the Fortieth Conference on Uncertainty in Artificial Intelligence</dc:title>
+            </bib:Journal>
+        </dcterms:isPartOf>
+        <dc:publisher>
+            <foaf:Organization>
+                <foaf:name>PMLR</foaf:name>
+            </foaf:Organization>
+        </dc:publisher>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Decruyenaere</foaf:surname>
+                        <foaf:givenName>Alexander</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Dehaene</foaf:surname>
+                        <foaf:givenName>Heidelinde</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Rabaey</foaf:surname>
+                        <foaf:givenName>Paloma</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Polet</foaf:surname>
+                        <foaf:givenName>Christiaan</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Decruyenaere</foaf:surname>
+                        <foaf:givenName>Johan</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Vansteelandt</foaf:surname>
+                        <foaf:givenName>Stijn</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Demeester</foaf:surname>
+                        <foaf:givenName>Thomas</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <bib:editors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Kiyavash</foaf:surname>
+                        <foaf:givenName>Negar</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Mooij</foaf:surname>
+                        <foaf:givenName>Joris M.</foaf:givenName>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:editors>
+        <dc:title>The real deal behind the artificial appeal: Inferential utility of tabular synthetic data</dc:title>
+        <dc:date>2024</dc:date>
+        <z:citationKey>Decruyenaere2024SyntheticDataInference</z:citationKey>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>https://proceedings.mlr.press/v244/decruyenaere24a.html</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <bib:pages>966–996</bib:pages>
+    </rdf:Description>
 </rdf:RDF>

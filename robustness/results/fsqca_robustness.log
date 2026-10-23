@@ -1,0 +1,92 @@
+==========================================================================
+INITIAL SOLUTION (IS) — anchors 95/50/5, incl ≥ 0.80, PRI ≥ 0.70, n ≥ 1
+==========================================================================
+  Necessity (high BPO):
+    SA       inclN=0.863  RoN=0.855  covN=0.856
+    PEO      inclN=0.865  RoN=0.913  covN=0.909
+    GOVMEAS  inclN=0.883  RoN=0.945  covN=0.943
+  Necessity (~BPO):
+    ~SA      inclN=0.831  RoN=0.881
+    ~PEO     inclN=0.899  RoN=0.876
+    ~GOVMEAS inclN=0.938  RoN=0.889
+
+  Truth table:
+    (0, 0, 1)  n=3   incl=0.986 PRI=0.850  OUT=1
+    (0, 1, 1)  n=1   incl=0.982 PRI=0.882  OUT=1
+    (1, 1, 1)  n=20  incl=0.972 PRI=0.947  OUT=1
+    (1, 1, 0)  n=2   incl=0.920 PRI=0.626  OUT=0
+    (0, 1, 0)  n=1   incl=0.916 PRI=0.491  OUT=0
+    (1, 0, 0)  n=3   incl=0.872 PRI=0.333  OUT=0
+    (0, 0, 0)  n=14  incl=0.632 PRI=0.098  OUT=0
+    (1, 0, 1)  n=0   (remainder)
+
+  IS = PEO*GOVMEAS + ~SA*GOVMEAS
+    PEO*GOVMEAS      inclS=0.971 PRI=0.943 covS=0.815 covU=0.409
+    ~SA*GOVMEAS      inclS=0.977 PRI=0.850 covS=0.453 covU=0.047
+  inclS=0.968  PRI=0.936  covS=0.862
+
+==========================================================================
+TEST 1 — SENSITIVITY RANGES (one parameter at a time)
+==========================================================================
+  p_in      base=95     IS holds over [80, 99] of the grid [80, 99]  (100% of the grid)
+  p_cross   base=50     IS holds over [45.5, 56] of the grid [30, 70]  (33% of the grid)
+            alternative: SA*GOVMEAS + ~PEO*GOVMEAS  (15 values)
+            alternative: PEO*GOVMEAS + SA*GOVMEAS  (12 values)
+            alternative: GOVMEAS + SA*PEO  (9 values)
+  p_ex      base=5      IS holds over [0.5, 10] of the grid [0.5, 20]  (50% of the grid)
+            alternative: PEO*GOVMEAS  (20 values)
+  incl_cut  base=0.8    IS holds over [0.7, 0.97] of the grid [0.7, 0.995]  (92% of the grid)
+            alternative: ~SA*GOVMEAS  (2 values)
+            alternative: ∅  (2 values)
+            alternative: ~SA*~PEO*GOVMEAS  (1 values)
+  pri_cut   base=0.7    IS holds over [0.63, 0.845] of the grid [0.5, 0.945]  (49% of the grid)
+            alternative: SA*PEO + ~SA*GOVMEAS  (26 values)
+            alternative: SA*PEO*GOVMEAS  (13 values)
+            alternative: PEO*GOVMEAS  (7 values)
+  n_cut     base=1      IS holds over [1, 1] of the grid [1, 5]  (20% of the grid)
+            alternative: SA*PEO*GOVMEAS + ~SA*~PEO*GOVMEAS  (2 values)
+            alternative: SA*PEO*GOVMEAS  (2 values)
+
+==========================================================================
+TEST 2 — FIT-ORIENTED ROBUSTNESS (test set TS)
+==========================================================================
+  Plausible solutions evaluated: 1152
+  Distribution of solutions across TS:
+     456 (40%)  SA*PEO*GOVMEAS + ~SA*~PEO*GOVMEAS
+     418 (36%)  PEO*GOVMEAS + ~SA*GOVMEAS
+     108 (9%)  PEO*GOVMEAS
+      84 (7%)  SA*PEO*GOVMEAS
+      50 (4%)  SA*PEO + ~SA*GOVMEAS
+      36 (3%)  SA*PEO + ~SA*~PEO*GOVMEAS
+
+  Term frequency across TS:
+    SA*PEO*GOVMEAS         47%
+    PEO*GOVMEAS            46%
+    ~SA*~PEO*GOVMEAS       43%
+    ~SA*GOVMEAS            41%
+    SA*PEO                 7%
+  GOVMEAS present in ALL terms: 93% of TS
+
+             inclS    covS  SC(IS,·)
+  IS         0.968   0.862         —
+  TS_min     0.972   0.754     0.872
+  TS_max     0.937   0.897     0.930
+  RF_cons = inclS(IS) − inclS(TS_min) = -0.004
+  RF_cov  = covS(IS) − covS(TS_min)   = +0.108
+
+==========================================================================
+TEST 3 — CASE-ORIENTED ROBUSTNESS
+==========================================================================
+  Typical cases in IS: 21  → robust 19, shaky 2, possible (only in TS_max) 0
+  Deviant cases (consistency) in IS: 3  → robust 1
+  RCR_typ = 0.905   RCR_dev = 0.333
+  Solution membership: mean σ across TS = 0.031; cases with membership >0.5 in ≥95% of TS: 20; in ≤5%: 30; ambiguous: 6
+
+==========================================================================
+ROBUST CORE
+==========================================================================
+  Terms present in 100 % of non-empty TS: none literally
+  GOVMEAS present in every term of every solution: False
+  Empty solutions in TS: 0 of 1152
+
+→ fsqca_robustness_results.json

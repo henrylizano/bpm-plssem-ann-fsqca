@@ -18,14 +18,16 @@ difuso (**fsQCA**).
 | Archivo | Lenguaje | Idioma | Descripción |
 |---|---|---|---|
 | `reproduce_article.py` | Python ≥ 3.9 | Inglés | **Implementación de referencia.** Programa PLS-SEM, ANN y fsQCA **desde cero** (sin dependencias PLS/QCA especializadas), en 7 módulos, replicando las configuraciones canónicas de R. Genera figuras en `figs_en/`. |
-| `reproducir_articulo.py` | Python ≥ 3.9 | Español | Versión en español de la misma arquitectura de 7 módulos. Genera figuras en `figs/`. Los módulos 3 y 5 conservan las variantes simplificadas previas (Q² por *blindfolding* y calibración lineal por tramos); véase la nota al final de esta sección. |
-| `reproducir_articulo.R` | R ≥ 4.0 | Español | Réplica independiente usando los paquetes canónicos del campo (`seminr`, `QCA`, `nnet`). Sirve de **validación cruzada** de la implementación en Python. Figuras en `figs/`. |
+| `reproducir_articulo.py` | Python ≥ 3.9 | Español | Versión en español de la misma arquitectura de 7 módulos, funcionalmente idéntica a la inglesa (mismo PLSpredict, ANN con L-BFGS y activación logística y calibración logística en el fsQCA). Genera figuras en `figs/`. |
+| `reproducir_articulo.R` | R ≥ 4.0 | Español | Réplica independiente usando los paquetes canónicos del campo (`seminr`, `QCA`, `nnet`), incluido el referente lineal (LM) de PLSpredict y el bloque de sensibilidad de la calibración 90/50/10. Sirve de **validación cruzada** de la implementación en Python. Figuras en `figs/`. |
 | `reproduce_article_en.R` | R ≥ 4.0 | Inglés | Traducción del anterior. Figuras en `figs_en/`. |
+| `robustness/` | Python ≥ 3.9 · R ≥ 4.0 | Ambos | **Análisis de robustez (Anexo C del artículo):** recuperación de parámetros del PLS-SEM por Monte Carlo, prueba de especificidad del protocolo ANN robusto y protocolo de robustez de Oana & Schneider (2024) para el fsQCA. Seis scripts (3 Python + 3 R) en cada idioma, más los resultados y registros de la ejecución de referencia en `robustness/results/`. Véanse §4.5 y [`robustness/README.md`](robustness/README.md). |
+| `article/` | — | Ambos | El manuscrito (v6) en `.docx` en español e inglés, las nueve figuras del artículo en ambos idiomas (`article/figures/es`, `article/figures/en`) y `make_figures.py`, que construye las cuatro figuras que no generan los scripts de reproducción (Figuras 1, 5, 6 y 9). |
 | `requirements.txt` | — | — | Dependencias de Python con versiones fijadas (*pinned*), incluidas las transitivas, para reproducibilidad bit a bit (vía pip). |
 | `environment.yml` | — | — | Entorno conda equivalente: Python 3.9.6 y los seis paquetes científicos fijados, desde `conda-forge`. |
 | `renv.lock` | — | — | Lockfile de R generado con `renv::snapshot()`: R 4.6.1 y **120 paquetes** (las 7 dependencias directas más todas las recursivas) fijados a versiones exactas. |
 | `final_dataset_plssem.csv` | — | — | Conjunto de datos analítico: **n = 56** observaciones válidas, 20 indicadores en escala Likert. Sin identificadores personales. |
-| `references/` | — | — | Bibliografía del artículo (63 entradas) en tres formatos: **BibTeX**, **BibLaTeX** y **Zotero RDF**. Véase [`references/README.md`](references/README.md). |
+| `references/` | — | — | Bibliografía del artículo (66 entradas) en tres formatos: **BibTeX**, **BibLaTeX** y **Zotero RDF**. Véase [`references/README.md`](references/README.md). |
 | `LICENSE` | — | — | Licencia MIT (véase §7). |
 | `CITATION.cff` | — | — | Metadatos de citación legibles por máquina (GitHub, Zenodo, gestores bibliográficos). |
 
@@ -35,13 +37,11 @@ consolidados. La convergencia sustantiva de ambas es, en sí misma, evidencia de
 robustez de los hallazgos; pueden aparecer diferencias marginales en la tercera
 cifra decimal por diferencias de semillas y generadores pseudoaleatorios.
 
-> **Nota sobre `reproducir_articulo.py`.** `reproduce_article.py` incorpora tres
-> mejoras metodológicas que la versión en español todavía no recoge:
-> PLSpredict completo con contraste frente a un modelo lineal (módulo 3),
-> optimizador L-BFGS con activación logística en las ANN (módulo 4) y
-> calibración logística de Ragin con solución conservadora y análisis de
-> sensibilidad (módulo 5). Para reproducir los resultados publicados, usa la
-> versión en inglés.
+> **Versiones 1.0.0 → 1.1.0.** El script de Python en español, que en la v1.0.0
+> conservaba variantes simplificadas de los módulos 3 y 5, está ahora alineado
+> con la implementación de referencia en inglés; los dos scripts de R incorporan
+> el referente lineal y el bloque de sensibilidad de la calibración; y se añaden
+> las carpetas `robustness/` y `article/`. Véase el historial de cambios en §10.
 
 ---
 
@@ -87,6 +87,29 @@ Tiempo de ejecución aproximado en un portátil actual: **2–5 minutos** en Pyt
 (dominado por el *bootstrap* de 3 000 remuestreos, las 100 particiones de
 PLSpredict y las 130 redes neuronales) y algo más en R.
 
+### Análisis de robustez (Anexo C)
+
+Los scripts de robustez también esperan el CSV junto a ellos; cópialo (o enlázalo)
+en `robustness/` y ejecuta cada script desde allí. Los tres scripts de Python
+escriben un archivo `*_resultados.json` (`*_results.json` en las versiones en
+inglés):
+
+```bash
+cd robustness && cp ../final_dataset_plssem.csv .
+python robustez_fsqca.py              # < 1 min   (o: python fsqca_robustness.py)
+python robustez_montecarlo_ann.py     # ≈ 3 min   (o: python robustness_montecarlo_ann.py)
+python robustez_montecarlo_pls.py     # ≈ 30 min  (o: python robustness_montecarlo_pls.py)
+```
+
+```r
+# Réplicas en R (requieren MASS, nnet, NeuralNetTools, caret, QCA, jsonlite)
+setwd("robustness"); source("robustez_fsqca.R")
+source("robustez_montecarlo_ann.R"); source("robustez_montecarlo_pls.R")
+```
+
+Las Figuras 1, 5, 6 y 9 del artículo se reconstruyen a partir de esos resultados
+con `python article/make_figures.py` (entrada por defecto: `robustness/results/`).
+
 ---
 
 ## 3. Modelo de medida y datos
@@ -97,10 +120,10 @@ etapas. Los 20 indicadores del CSV se agrupan así:
 | Constructo | Rol | Indicadores |
 |---|---|---|
 | **SA** — Alineamiento estratégico | Reflectivo (dimensión de 1.er orden) | `Ae1`, `Ae2`, `Ae3` |
-| **PEO** — Orientación a procesos | Reflectivo (dimensión de 1.er orden) | `Ep1`–`Ep5` |
+| **PEO** — Capacidades humanas (capacitación y empoderamiento) | Reflectivo (dimensión de 1.er orden) | `Ep1`–`Ep5` |
 | **GOVMEAS** — Gobernanza y medición | Reflectivo (dimensión de 1.er orden) | `Co1`–`Co5`, `Co8`, `Md1`, `Md3`, `Md4` |
 | **BPM_Capability** | **Formativo** (constructo de 2.º orden) | Scores de SA, PEO y GOVMEAS |
-| **BPO** — Desempeño de procesos | Compuesto (variable dependiente) | `Co7`, `Ae10`, `Md7` |
+| **BPO** — Resultados de proceso de negocio | Compuesto (variable dependiente) | `Co7`, `Ae10`, `Md7` |
 
 El *score* de cada dimensión reflectiva es la media de sus indicadores
 estandarizados (*z*-scores); es el enfoque de **puntuaciones de constructo en dos
@@ -319,13 +342,54 @@ ANN; y la expresión de la solución conservadora de fsQCA con su consistencia,
 PRI y cobertura. Todos los valores se interpolan de la ejecución en curso, no
 están fijados en el código.
 
+### 4.5 Análisis de robustez (`robustness/`, Anexo C)
+
+**Qué responde:** ¿cuán estable es cada inferencia frente al tamaño muestral
+(n = 56) y frente a las decisiones analíticas? Los datos simulados se emplean
+**exclusivamente** para caracterizar los estimadores bajo las condiciones del
+estudio; nunca entran en la inferencia sustantiva, cuyo único insumo es la
+muestra observada.
+
+| Script (ES / EN) | Componente | Diseño | Tiempo (máquina de referencia) |
+|---|---|---|---|
+| `robustez_montecarlo_pls.py` / `robustness_montecarlo_pls.py` (+ `.R`) | **Recuperación de parámetros** del PLS-SEM por Monte Carlo (Paxton et al., 2001; Kock & Hadaya, 2018) | Proceso generador fijado en el vector de medias y la matriz de covarianzas observados de los seis indicadores de la etapa 2; 1 000 réplicas normales multivariantes para cada n ∈ {30, 40, 56, 80, 100, 150, 200}; el modelo Modo B se reestima en cada una. Reporta sesgo, RMSE, ancho del IC, P(peso de GOVMEAS dominante), potencia para β ≥ 0,35 y P(peso de PEO significativo); cobertura y potencia bootstrap sobre 150 réplicas × 250 remuestreos; escenarios adversos con β_pob reducido a 0,70 / 0,50 / 0,35. | ≈ 30 min |
+| `robustez_montecarlo_ann.py` / `robustness_montecarlo_ann.py` (+ `.R`) | **Especificidad del protocolo ANN robusto** | 120 réplicas de n = 56 bajo tres procesos generadores: H0a (correlaciones bivariadas con BPO igualadas, diagnóstico), **H0b (contribución condicional igual: coeficientes de regresión idénticos con R² preservado — la hipótesis nula correcta de equicontribución)** y H1 (DGP real). En cada réplica se compara la red de ejecución única (10 neuronas, sin regularizar) con el protocolo robusto (10 redes × 10 particiones, 3 neuronas, decaimiento 0,1). | ≈ 3 min |
+| `robustez_fsqca.py` / `fsqca_robustness.py` (+ `.R`) | **Protocolo de robustez para QCA** (Oana & Schneider, 2024) | Prueba 1: rangos de sensibilidad de cada parámetro (anclajes de inclusión / cruce / exclusión, corte de consistencia bruta, corte PRI, corte de frecuencia). Prueba 2: robustez orientada al ajuste sobre un conjunto de prueba de **1 152** especificaciones plausibles (TS_min, TS_max, coincidencia de conjuntos, RF_cons, RF_cov, frecuencia de términos). Prueba 3: robustez orientada a los casos (RCR_typ, RCR_dev, estabilidad de la membresía). Núcleo robusto. | < 1 min |
+
+Resultados clave de la ejecución de referencia (`robustness/results/*.log`, `*.json`):
+
+- **PLS-SEM.** Con n = 56: sesgo de β = +0,004, RMSE = 0,017, potencia
+  (β ≥ 0,35) = 1,000, P(GOVMEAS dominante) = 0,921, P(peso de PEO
+  significativo) = **0,820** (0,940 con n = 80), cobertura del IC bootstrap de β
+  = 0,847 (ligeramente optimista) y de los pesos 0,907–0,947.
+- **ANN.** Bajo H0b el protocolo robusto devuelve 32,8 / 33,5 / 33,7 % con
+  σ = 4,4 pp (la mitad que la ejecución única) y reduce a la mitad la frecuencia
+  de brechas espurias > 10 pp (82 % → 43 %); bajo el DGP real recupera la
+  dominancia de GOVMEAS en el 81,7 % de las réplicas (ventaja media 6,3 pp).
+- **fsQCA.** La solución conservadora se mantiene en todo el rango del anclaje de
+  inclusión y en el 92 % del rango de consistencia bruta; el 92 % de las 1 152
+  soluciones del conjunto de prueba son la solución inicial o formas anidadas en
+  ella; SC(IS, TS_min) = 0,872, SC(IS, TS_max) = 0,930, RF_cons = −0,004,
+  RF_cov = +0,108; RCR_typ = 0,905; GOVMEAS está presente en todos los términos
+  en el 93 % de las especificaciones (100 % con PRI ≥ 0,70).
+
+> **Nota sobre las réplicas en R.** Los tres scripts de R de `robustness/` son
+> traducciones fieles de los de Python (mismos diseños y rejillas, construidas
+> sobre `MASS::mvrnorm`, `nnet`, `NeuralNetTools::garson`, `caret::createFolds` y
+> `QCA::calibrate` / `truthTable` / `minimize`). **No se ejecutaron en el entorno
+> de referencia** (sin R disponible); las cifras reportadas en el artículo y en
+> `robustness/results/` proceden de los scripts de Python. Cabe esperar pequeñas
+> diferencias en el componente ANN por la distinta generación pseudoaleatoria.
+
 ---
 
 ## 5. Figuras generadas
 
 Los scripts en español escriben en `figs/` y los ingleses en `figs_en/`
 (ambos directorios se crean automáticamente y están excluidos del control de
-versiones):
+versiones). El conjunto completo de las nueve figuras del artículo, en ambos
+idiomas, está versionado en `article/figures/`; las Figuras 1, 5, 6 y 9 las
+construye `article/make_figures.py` a partir de los resultados de robustez:
 
 | Figura | Contenido | Python | R |
 |---|---|:---:|:---:|
@@ -334,7 +398,11 @@ versiones):
 | `fig4_ann_inestable` / `fig4_ann_unstable` | Inestabilidad de la importancia en 30 redes de ejecución única | ✓ | — |
 | `fig5_ann_robusto` / `fig5_ann_robust` | Importancia robusta (10 redes × 10 particiones) con barras de error | ✓ | ✓ |
 | `fig7_fsqca_xy` | Diagrama XY de suficiencia de la configuración central | ✓ | ✓ |
-| `fig8_radar` / `fig9_radar` | Radar de síntesis tri-metodológica | ✓ | ✓ |
+| `fig9_radar` | Radar de síntesis tri-metodológica (Figura 8 del artículo) | ✓ | ✓ |
+| `fig1_hcm` | Modelo de componente jerárquico reespecificado (Figura 1) | `make_figures.py` | — |
+| `fig5_ann_robusto` / `fig5_ann_robust` | Importancia robusta con las cifras canónicas de R (Figura 5, versión del artículo) | `make_figures.py` | — |
+| `fig6_solucion` / `fig6_solution` | Solución conservadora M1: matriz de condiciones y coberturas (Figura 6) | `make_figures.py` | — |
+| `fig9_robustez` / `fig9_robustness` | Síntesis de robustez: Monte Carlo, especificidad ANN, frecuencia de términos fsQCA (Figura 9) | `make_figures.py` | — |
 
 ---
 
@@ -391,6 +459,10 @@ repository* a partir de él.
 
 ## 9. Referencias metodológicas
 
+- Decruyenaere, A., Dehaene, H., Rabaey, P., Polet, C., Decruyenaere, J.,
+  Vansteelandt, S., & Demeester, T. (2024). The real deal behind the artificial
+  appeal: Inferential utility of tabular synthetic data. *Proceedings of the
+  40th Conference on Uncertainty in Artificial Intelligence*, PMLR 244, 966–996.
 - Garson, G. D. (1991). Interpreting neural-network connection weights.
   *AI Expert*, 6(4), 46–51.
 - Hair, J. F., Hult, G. T. M., Ringle, C. M., & Sarstedt, M. (2022).
@@ -399,6 +471,12 @@ repository* a partir de él.
 - Henseler, J., Ringle, C. M., & Sarstedt, M. (2015). A new criterion for
   assessing discriminant validity in variance-based structural equation
   modeling. *Journal of the Academy of Marketing Science*, 43(1), 115–135.
+- Oana, I.-E., & Schneider, C. Q. (2024). A robustness test protocol for applied
+  QCA: Theory and R software application. *Sociological Methods & Research*,
+  53(1), 57–88.
+- Paxton, P., Curran, P. J., Bollen, K. A., Kirby, J., & Chen, F. (2001). Monte
+  Carlo experiments: Design and implementation. *Structural Equation Modeling*,
+  8(2), 287–312.
 - Ragin, C. C. (2008). *Redesigning Social Inquiry: Fuzzy Sets and Beyond*.
   University of Chicago Press.
 - Schneider, C. Q., & Wagemann, C. (2012). *Set-Theoretic Methods for the Social
@@ -413,3 +491,27 @@ repository* a partir de él.
 - Shmueli, G., Sarstedt, M., Hair, J. F., Cheah, J.-H., Ting, H., Vaithilingam, S.,
   & Ringle, C. M. (2019). Predictive model assessment in PLS-SEM: Guidelines for
   using PLSpredict. *European Journal of Marketing*, 53(11), 2322–2347.
+
+---
+
+## 10. Historial de cambios
+
+**v1.1.0 (2026-10-22)**
+
+- Nuevo módulo `robustness/` (Anexo C del artículo): recuperación de parámetros
+  del PLS-SEM por Monte Carlo, prueba de especificidad del protocolo ANN robusto
+  y protocolo de robustez de Oana & Schneider (2024) para el fsQCA — tres scripts
+  de Python y tres réplicas en R en cada idioma, con los resultados y registros
+  de la ejecución de referencia.
+- Nueva carpeta `article/`: manuscrito v6 (`.docx`, español e inglés), las nueve
+  figuras en ambos idiomas y `make_figures.py`.
+- `reproducir_articulo.py` alineado con `reproduce_article.py` (PLSpredict
+  completo con referente LM, ANN con L-BFGS + activación logística, calibración
+  logística en el fsQCA con solución conservadora y análisis de sensibilidad).
+- `reproducir_articulo.R` y `reproduce_article_en.R`: referente LM en PLSpredict
+  y bloque de sensibilidad de la calibración 90/50/10.
+- Figura 1 corregida: los pesos formativos coinciden ahora con la Tabla 2
+  (0,420* / 0,871***).
+- Bibliografía: tres entradas añadidas (66 en total) en los tres formatos.
+
+**v1.0.0 (2026-08-16)** — versión inicial.

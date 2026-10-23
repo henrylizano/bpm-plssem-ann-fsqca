@@ -17,3 +17,8 @@ __pycache__/
 
 # OS
 .DS_Store
+
+# Robustness scripts run in place
+robustness/final_dataset_plssem.csv
+robustness/*.json
+robustness/*.log

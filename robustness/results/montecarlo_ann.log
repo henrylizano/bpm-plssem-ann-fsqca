@@ -1,0 +1,17 @@
+Observed correlations with BPO: [0.813 0.801 0.878]
+Correlations among dimensions     : SA-PEO 0.733  SA-GOV 0.849  PEO-GOV 0.828
+
+CONTROL real sample: robust = [30. 29. 41.] (±[0.1  0.14 0.15])
+
+H0a — equal bivariate correlations with BPO (120 replications, n = 56)
+  Single run         mean=[37.9 38.5 23.6]  σ=[9.5 9.9 9.2]  P(dom): SA=0.43 PEO=0.47 GOV=0.10  mean gap=25.7pp  P(>10pp)=0.96
+  Robust protocol    mean=[35.4 36.4 28.2]  σ=[5.2 5.2 5.1]  P(dom): SA=0.46 PEO=0.46 GOV=0.08  mean gap=13.2pp  P(>10pp)=0.60
+
+H0b — equal conditional contribution (equal β_j) (120 replications, n = 56)
+  Single run         mean=[32.5 33.9 33.6]  σ=[ 8.9  8.6 10.5]  P(dom): SA=0.30 PEO=0.30 GOV=0.40  mean gap=19.7pp  P(>10pp)=0.82
+  Robust protocol    mean=[32.8 33.5 33.7]  σ=[4.4 4.4 4.5]  P(dom): SA=0.29 PEO=0.33 GOV=0.38  mean gap=9.2pp  P(>10pp)=0.43
+
+H1 — real DGP (120 replications, n = 56), robust protocol
+  mean=[29.9 30.1 40. ]  σ=[5.6 5.1 4.8]  P(GOV dominant)=0.817  GOV lead: mean=6.3pp  P(>5pp)=0.56  CI95%=[-8.0, 22.7]
+
+Time: 3.2 min → montecarlo_ann_results.json

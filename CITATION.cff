@@ -12,7 +12,10 @@ abstract: >-
   squares structural equation modeling (PLS-SEM), artificial neural networks
   (ANN) and fuzzy-set qualitative comparative analysis (fsQCA). Independent
   implementations in Python and R reproduce every numerical result and figure
-  of the associated article.
+  of the associated article. Version 1.1.0 adds the robustness analysis
+  (Monte Carlo parameter recovery for PLS-SEM, specificity test of the robust
+  ANN protocol and the Oana & Schneider robustness protocol for fsQCA), the
+  manuscript in Spanish and English, and all figures in both languages.
 keywords:
   - business process management
   - PLS-SEM
@@ -20,7 +23,9 @@ keywords:
   - fsQCA
   - reproducible research
   - process governance
+  - robustness analysis
+  - Monte Carlo simulation
 license: MIT
 repository-code: "https://github.com/henrylizano/bpm-plssem-ann-fsqca"
-version: "1.0.0"
-date-released: "2026-08-16"
+version: "1.1.0"
+date-released: "2026-10-22"

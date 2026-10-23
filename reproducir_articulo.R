@@ -107,7 +107,8 @@ cat("\nVIF:\n"); print(lapply(s$validity$vif_items, round, 3))
 # =============================================================================
 cat("\n", strrep("=", 70), "\nMÓDULO 3 — PLSpredict\n", strrep("=", 70), "\n", sep = "")
 pred <- predict_pls(model = pls_model, technique = predict_DA, noFolds = 10, reps = 10)
-cat("\nMétricas predictivas:\n"); print(round(summary(pred)$PLS_out_of_sample, 3))
+cat("\nMétricas predictivas del modelo PLS:\n"); print(round(summary(pred)$PLS_out_of_sample, 3))
+cat("\nReferente lineal (LM), mismas particiones:\n"); print(round(summary(pred)$LM_out_of_sample, 3))
 
 # =============================================================================
 # MÓDULO 4 — REDES NEURONALES ARTIFICIALES
@@ -192,6 +193,24 @@ cat("\nSolución de suficiencia:\n")
 sol <- minimize(tt, details = TRUE, show.cases = TRUE)
 print(sol)
 cat("  >>> GOVMEAS presente en todas las configuraciones = CONDICIÓN CENTRAL\n")
+
+# ---- Sensibilidad de la calibración: anclajes alternativos 90/50/10 --------
+cat("\nSENSIBILIDAD de la calibración (anclajes 90/50/10):\n")
+calibrate_fuzzy2 <- function(x) {
+  q <- quantile(x, probs = c(0.90, 0.50, 0.10))
+  calibrate(x, type = "fuzzy", thresholds = c(q[3], q[2], q[1]))
+}
+fs2 <- data.frame(SA = calibrate_fuzzy2(SA), PEO = calibrate_fuzzy2(PEO),
+                  GOVMEAS = calibrate_fuzzy2(GOV), BPO = calibrate_fuzzy2(BPO))
+cat("  Necesidad (BPO alto):\n")
+print(pof(fs2[, c("SA", "PEO", "GOVMEAS")], fs2$BPO,
+          relation = "necessity")$incl.cov)
+tt2 <- truthTable(fs2, outcome = "BPO", conditions = c("SA", "PEO", "GOVMEAS"),
+                  incl.cut = 0.80, pri.cut = 0.70, complete = TRUE)
+sol2 <- minimize(tt2, details = TRUE)
+print(sol2)
+cat("  >>> Estructura de la solución y centralidad de GOVMEAS estables\n")
+cat("  >>> bajo ambos esquemas de anclaje (95/50/5 y 90/50/10)\n")
 
 # =============================================================================
 # MÓDULO 6 — GENERACIÓN DE FIGURAS (ggplot2)

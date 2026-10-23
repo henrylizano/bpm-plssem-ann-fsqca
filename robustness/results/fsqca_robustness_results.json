@@ -1,0 +1,168 @@
+{
+  "IS": {
+    "expr": "PEO*GOVMEAS + ~SA*GOVMEAS",
+    "cons": 0.9682474044495244,
+    "pri": 0.9358022144369423,
+    "cov": 0.8616318293971512,
+    "terms": [
+      {
+        "term": "PEO*GOVMEAS",
+        "inclS": 0.9706031845665885,
+        "PRI": 0.9425405504301637,
+        "covS": 0.8149509320379342,
+        "covU": 0.4088531311928861
+      },
+      {
+        "term": "~SA*GOVMEAS",
+        "inclS": 0.9766118867995048,
+        "PRI": 0.8496884079064752,
+        "covS": 0.45277869820426514,
+        "covU": 0.04668089735921697
+      }
+    ]
+  },
+  "sensitivity": {
+    "p_in": {
+      "range": [
+        80.0,
+        99.0
+      ],
+      "share_same": 1.0,
+      "grid": [
+        80.0,
+        99.0
+      ],
+      "alternatives": {}
+    },
+    "p_cross": {
+      "range": [
+        45.5,
+        56.0
+      ],
+      "share_same": 0.3333333333333333,
+      "grid": [
+        30.0,
+        70.0
+      ],
+      "alternatives": {
+        "PEO*GOVMEAS": 3,
+        "GOVMEAS": 6,
+        "SA*GOVMEAS + ~PEO*GOVMEAS": 15,
+        "SA*PEO*GOVMEAS + ~SA*~PEO*GOVMEAS": 3,
+        "PEO*GOVMEAS + SA*GOVMEAS": 12,
+        "PEO*GOVMEAS + SA*GOVMEAS + SA*PEO": 6,
+        "GOVMEAS + SA*PEO": 9
+      }
+    },
+    "p_ex": {
+      "range": [
+        0.5,
+        10.0
+      ],
+      "share_same": 0.5,
+      "grid": [
+        0.5,
+        20.0
+      ],
+      "alternatives": {
+        "PEO*GOVMEAS": 20
+      }
+    },
+    "incl_cut": {
+      "range": [
+        0.7,
+        0.9700000000000002
+      ],
+      "share_same": 0.9166666666666666,
+      "grid": [
+        0.7,
+        0.9950000000000002
+      ],
+      "alternatives": {
+        "~SA*GOVMEAS": 2,
+        "~SA*~PEO*GOVMEAS": 1,
+        "\u2205": 2
+      }
+    },
+    "pri_cut": {
+      "range": [
+        0.6300000000000001,
+        0.8450000000000003
+      ],
+      "share_same": 0.4888888888888889,
+      "grid": [
+        0.5,
+        0.9450000000000004
+      ],
+      "alternatives": {
+        "SA*PEO + ~SA*GOVMEAS": 26,
+        "PEO*GOVMEAS": 7,
+        "SA*PEO*GOVMEAS": 13
+      }
+    },
+    "n_cut": {
+      "range": [
+        1.0,
+        1.0
+      ],
+      "share_same": 0.2,
+      "grid": [
+        1.0,
+        5.0
+      ],
+      "alternatives": {
+        "SA*PEO*GOVMEAS + ~SA*~PEO*GOVMEAS": 2,
+        "SA*PEO*GOVMEAS": 2
+      }
+    }
+  },
+  "TS_n": 1152,
+  "TS_dist": {
+    "SA*PEO*GOVMEAS + ~SA*~PEO*GOVMEAS": 456,
+    "PEO*GOVMEAS + ~SA*GOVMEAS": 418,
+    "PEO*GOVMEAS": 108,
+    "SA*PEO*GOVMEAS": 84,
+    "SA*PEO + ~SA*GOVMEAS": 50,
+    "SA*PEO + ~SA*~PEO*GOVMEAS": 36
+  },
+  "term_freq": {
+    "SA*PEO*GOVMEAS": 0.46875,
+    "~SA*~PEO*GOVMEAS": 0.4270833333333333,
+    "PEO*GOVMEAS": 0.4565972222222222,
+    "~SA*GOVMEAS": 0.40625,
+    "SA*PEO": 0.07465277777777778
+  },
+  "gov_in_all_terms_share": 0.9253472222222222,
+  "fit": {
+    "IS": {
+      "cons": 0.9682474044495244,
+      "cov": 0.8616318293971512
+    },
+    "TSmin": {
+      "cons": 0.9719184112181303,
+      "cov": 0.7540821819721917,
+      "SC": 0.8718734996877741
+    },
+    "TSmax": {
+      "cons": 0.9373160845357381,
+      "cov": 0.8967344793081304,
+      "SC": 0.9301598584333389
+    }
+  },
+  "cases": {
+    "typ_IS": 21,
+    "robust": 19,
+    "shaky": 2,
+    "possible": 0,
+    "dev_IS": 3,
+    "RCR_typ": 0.9047619047619048,
+    "RCR_dev": 0.3333333333333333,
+    "stable_in": 20,
+    "stable_out": 30,
+    "ambiguous": 6
+  },
+  "robust_core": {
+    "always": [],
+    "gov_core": false
+  }
+}
